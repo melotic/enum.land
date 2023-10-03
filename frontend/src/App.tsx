@@ -1,3 +1,4 @@
+import { useQuery } from "@tanstack/react-query";
 import { useDebounce } from "@uidotdev/usehooks";
 import axios from "axios";
 import { useState } from "react";
@@ -11,7 +12,6 @@ import {
   Spinner,
 } from "react-bootstrap";
 import { TbNetwork } from "react-icons/tb";
-import { useQuery } from "react-query";
 
 function App() {
   const [domain, setDomain] = useState<string>("");
