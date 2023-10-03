@@ -1,5 +1,4 @@
 name: frontend
-
 on:
   push:
     branches: ["main"]
@@ -8,6 +7,9 @@ on:
 jobs:
   build:
     runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: frontend
     steps:
       - uses: actions/checkout@v3
       - name: Use Node.js
