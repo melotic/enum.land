@@ -15,11 +15,12 @@ pub trait CrtshClient {
 
 pub struct CrtshClientImpl {
     client: reqwest::Client,
+    base_url: String,
 }
 
 impl CrtshClientImpl {
-    pub fn new(client: Client) -> Self {
-        Self { client }
+    pub fn new(client: Client, base_url: String) -> Self {
+        Self { client, base_url }
     }
 }
 
@@ -31,7 +32,7 @@ impl Default for CrtshClientImpl {
             .build()
             .unwrap();
 
-        Self::new(client)
+        Self::new(client, "https://crt.sh".to_string())
     }
 }
 
@@ -44,7 +45,7 @@ struct CrtshResponse {
 impl CrtshClient for CrtshClientImpl {
     #[instrument(skip(self))]
     async fn get_domains(&self, domain: &str) -> Result<HashSet<String>, AppError> {
-        let url = format!("https://crt.sh/?q=%25.{}&output=json", domain);
+        let url = format!("{}/?q={}&output=json", self.base_url, domain);
         let response = self
             .client
             .get(&url)
@@ -87,10 +88,19 @@ mod tests {
 
     #[tokio::test]
     async fn example_com_works() {
-        let client = CrtshClientImpl::default();
-        let domains = client.get_domains("example.com").await.unwrap();
+        let mut server = mockito::Server::new();
+        let mock = server
+            .mock("GET", "/?q=example.com&output=json")
+            .with_status(200)
+            .with_header("content-type", "application/json")
+            .with_body_from_file("tests/data/crtsh.json")
+            .create_async()
+            .await;
+        let client = CrtshClientImpl::new(reqwest::Client::new(), server.url());
 
+        let domains = client.get_domains("example.com").await.unwrap();
         let domains: Vec<&str> = domains.iter().map(|s| s.as_ref()).collect();
+
         let expected = vec![
             "example.com",
             "www.example.com",
@@ -102,5 +112,6 @@ mod tests {
         ];
 
         assert_that!(domains).contains_exactly(expected);
+        mock.assert_async().await;
     }
 }
