@@ -60,5 +60,5 @@ async fn get_domains(
         None => return Err(AppError::MissingDomainParam),
     };
 
-    Ok(Json(state.crtsh_client.get_domains(&domain).await?))
+    Ok(Json(state.crtsh_client.get_domains(domain).await?))
 }
