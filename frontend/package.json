@@ -20,8 +20,8 @@
     "@tanstack/react-query": "4.36.1"
   },
   "devDependencies": {
-    "@types/react": "18.2.37",
-    "@types/react-dom": "18.2.15",
+    "@types/react": "18.2.38",
+    "@types/react-dom": "18.2.16",
     "@typescript-eslint/eslint-plugin": "6.12.0",
     "@typescript-eslint/parser": "6.12.0",
     "@vitejs/plugin-react-swc": "3.5.0",
