@@ -18,4 +18,4 @@ tracing-subscriber = { version = "=0.3.18", features = ["env-filter"] }
 
 [dev-dependencies]
 assertor = "=0.0.2"
-mockito = "=1.4.0"
+mockito = "=1.5.0"
